@@ -1,0 +1,56 @@
+---
+- hosts: videoservers
+  remote_user: "peko"
+
+  tasks:
+  - name: Set up a systemd service for videoserver instances
+    vars:
+      - cam_serial: "{{item.serial}}"
+      - cam_name: "{{item.name}}"
+    template:
+      src: videostream.service.j2
+      dest: /lib/systemd/system/videostream-{{item.name}}.service
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+    with_items: "{{ cam_config }}"
+
+  - name: Set up a systemd service for managing all videoserver instances simultaneously
+    template:
+      src: videostreams.service.j2
+      dest: /lib/systemd/system/videostreams.service
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+
+    #  - name: Enable and start services
+    #    service:
+    #      name: {{ item }}.service
+    #      state: started
+    #      enabled: yes
+    #    become: true
+    #    with_item:
+    #      - videoserverinstance@1
+    #      - videoserverinstance@2
+    #      - videoserverinstance@3
+    #      - videoserverinstance@4
+    #      - videoserver
+    
+  - name: Create a streaming script into the home directory
+    template:
+      src: video_streamer.sh.j2
+      dest: /home/peko/video_streamer.sh
+      owner: "peko"
+      group: "peko"
+      mode: '0744'
+
+    #  - name: Copy the ffmpeg streaming script to user home
+    #    copy:
+    #      src: files/video_streamer.sh
+    #      dest: /home/peko/video_streamer.sh
+    #      owner: "peko"
+    #      group: "peko"
+    #      mode: '0744'
+

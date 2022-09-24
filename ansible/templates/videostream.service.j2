@@ -1,0 +1,15 @@
+[Unit]
+Description=Remrob videostreaming service for camera {{cam_name}}
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c "/home/peko/remrob-videoserver/scripts/streaming.sh {{cam_serial}} {{cam_name}}"
+WorkingDirectory=/home/peko
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=peko
+
+[Install]
+WantedBy=multi-user.target
+WanterBy=videostreams.service

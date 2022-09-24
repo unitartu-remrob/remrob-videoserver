@@ -1,0 +1,13 @@
+videoservers:
+  hosts:
+    192.168.200.211:
+      cam_config:
+       - serial: 77BB829F
+         name: cam1
+       - serial: C17F829F
+         name: cam2
+       - serial: EA5F829F
+         name: cam3
+      rtsp_interface: 192.168.200.211
+
+  #192.168.200.212
