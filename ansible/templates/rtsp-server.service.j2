@@ -1,0 +1,14 @@
+[Unit]
+Description=Service for rtsp simple server
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c "RTSP_RTSPADDRESS={{rtsp_address}}:8554 /home/peko/rtsp-simple-server/rtsp-simple-server"
+WorkingDirectory=/home/peko
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=peko
+
+[Install]
+WantedBy=multi-user.target

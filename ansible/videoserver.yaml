@@ -46,11 +46,47 @@
       group: "peko"
       mode: '0744'
 
-    #  - name: Copy the ffmpeg streaming script to user home
-    #    copy:
-    #      src: files/video_streamer.sh
-    #      dest: /home/peko/video_streamer.sh
-    #      owner: "peko"
-    #      group: "peko"
-    #      mode: '0744'
+  - name: Prepare a folder for rtsp-simple-server
+    file:
+      path: "/home/peko/rtsp-simple-server"
+      state: directory
+      owner: "peko"
+      group: "peko"
+      mode: '0775'
 
+  - name: Downloading and unpacking rtsp-simple-server
+    unarchive:
+      src: https://github.com/aler9/rtsp-simple-server/releases/download/v0.16.0/rtsp-simple-server_v0.16.0_linux_amd64.tar.gz
+      remote_src: yes
+      dest: /home/peko/rtsp-simple-server
+
+  - name: Set up a service for rtsp-server
+    template:
+      src: rtsp-server.service.j2
+      dest: /lib/systemd/system/rtsp-server.service
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+
+  - name: Enable rtsp server service
+    service:
+      name: "rtsp-server"
+      enabled: yes
+      state: restarted
+    become: true
+
+  - name: Enable videostream services
+    service:
+      name: "videostream-{{ item.name }}"
+      enabled: yes
+      state: restarted
+    with_items: "{{ cam_config }}"
+    become: true
+
+  - name: Enable and start videostreams service
+    service:
+      name: "videostreams"
+      state: restarted
+      enabled: yes
+    become: true
