@@ -3,48 +3,13 @@
   remote_user: "peko"
 
   tasks:
-  - name: Set up a systemd service for videoserver instances
-    vars:
-      - cam_serial: "{{item.serial}}"
-      - cam_name: "{{item.name}}"
-    template:
-      src: videostream.service.j2
-      dest: /lib/systemd/system/videostream-{{item.name}}.service
-      owner: root
-      group: root
-      mode: '0644'
-    become: true
-    with_items: "{{ cam_config }}"
-
-  - name: Set up a systemd service for managing all videoserver instances simultaneously
-    template:
-      src: videostreams.service.j2
-      dest: /lib/systemd/system/videostreams.service
-      owner: root
-      group: root
-      mode: '0644'
-    become: true
-
-    #  - name: Enable and start services
-    #    service:
-    #      name: {{ item }}.service
-    #      state: started
-    #      enabled: yes
-    #    become: true
-    #    with_item:
-    #      - videoserverinstance@1
-    #      - videoserverinstance@2
-    #      - videoserverinstance@3
-    #      - videoserverinstance@4
-    #      - videoserver
     
-  - name: Create a streaming script into the home directory
-    template:
-      src: video_streamer.sh.j2
-      dest: /home/peko/video_streamer.sh
-      owner: "peko"
-      group: "peko"
-      mode: '0744'
+  - name: Ensure user has access to the video devices and the graphics hardware
+    user:
+      name: "peko"
+      groups: video,render
+      append: yes
+    become: true
 
   - name: Prepare a folder for rtsp-simple-server
     file:
@@ -69,12 +34,43 @@
       mode: '0644'
     become: true
 
-  - name: Enable rtsp server service
+  - name: Enable and start rtsp server sevice
     service:
       name: "rtsp-server"
       enabled: yes
       state: restarted
     become: true
+
+  - name: Create a streaming script into the home directory
+    template:
+      src: video_streamer.sh.j2
+      dest: /home/peko/video_streamer.sh
+      owner: "peko"
+      group: "peko"
+      mode: '0744'
+
+  - name: Set up a systemd service for videoserver instances
+    vars:
+      - cam_serial: "{{item.serial}}"
+      - cam_name: "{{item.name}}"
+    template:
+      src: videostream.service.j2
+      dest: /lib/systemd/system/videostream-{{item.name}}.service
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+    with_items: "{{ cam_config }}"
+
+  - name: Set up a service for managing all videostreams simultaneously
+    template:
+      src: videostreams.service.j2
+      dest: /lib/systemd/system/videostreams.service
+      owner: root
+      group: root
+      mode: '0644'
+    become: true
+
 
   - name: Enable videostream services
     service:
