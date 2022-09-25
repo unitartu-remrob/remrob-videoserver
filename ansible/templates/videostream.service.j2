@@ -3,6 +3,7 @@ Description=Remrob videostreaming service for camera {{cam_name}}
 After=network.target
 PartOf=videostreams.service
 After=videostreams.service
+StartLimitIntervalSec=0
 
 [Service]
 ExecStart=/bin/bash -c "/home/peko/video_streamer.sh {{cam_serial}} {{cam_name}}"
@@ -11,6 +12,7 @@ StandardOutput=inherit
 StandardError=inherit
 Requires=rtsp-server.service
 Restart=always
+RestartSec=3
 User=peko
 
 [Install]

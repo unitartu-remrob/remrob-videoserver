@@ -51,6 +51,7 @@
       name: "rtsp-server"
       enabled: yes
       state: restarted
+      daemon_reload: yes
     become: true
 
   - name: Create a streaming script into the home directory
@@ -83,6 +84,11 @@
       mode: '0644'
     become: true
 
+
+  - name: Reloading systemd services daemon
+    service:
+      daemon_reload: yes
+    become: true
 
   - name: Enable videostream services
     service:
