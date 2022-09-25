@@ -6,8 +6,10 @@ videoservers:
          name: cam1
        - serial: C17F829F
          name: cam2
-       - serial: EA5F829F
+       - serial: 78C1FE8F
          name: cam3
+       - serial: EA5F829F
+         name: cam4
       rtsp_address: 192.168.200.211
 
     192.168.200.212:
