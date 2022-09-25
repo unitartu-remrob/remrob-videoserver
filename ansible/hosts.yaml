@@ -14,12 +14,12 @@ videoservers:
 
     192.168.200.212:
       cam_config:
-       - serial: FA5DC39F 
-         name: cam5
        - serial: 4C57FE8F 
-         name: cam6
-       - serial: FBB2FE8F 
-         name: cam7
+         name: cam5
        - serial: 41CFC39F 
+         name: cam6
+       - serial: FA5DC39F 
+         name: cam7
+       - serial: FBB2FE8F 
          name: cam8
       rtsp_address: 192.168.200.212
