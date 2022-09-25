@@ -4,12 +4,24 @@
 
   tasks:
     
-  - name: Ensure user has access to the video devices and the graphics hardware
+  - name: Add user to video and render groups
     user:
       name: "peko"
       groups: video,render
       append: yes
     become: true
+
+  - name: Install apt packages
+    apt:
+      name: "{{ packages }}"
+    become: true
+    vars:
+      packages:
+        - ffmpeg
+        - v4l-utils
+        - vim
+
+
 
   - name: Prepare a folder for rtsp-simple-server
     file:
