@@ -1,8 +1,7 @@
 #!/bin/bash
 
-ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 \
-	-f v4l2 -input_format yuyv422 -framerate 10 -video_size 1280x720 \
-       	-i /dev/v4l/by-id/usb-046d_C922_Pro_Stream_Webcam_$1-video-index0 \
- 	-vf 'format=nv12,hwupload' -map 0:0 -profile:v 77 -level 51 -qp 25 -quality 0 \
- 	-vcodec h264_vaapi \
- 	-f rtsp -rtsp_transport tcp rtsp://{{rtsp_address}}:8554/$2
+ffmpeg  -f v4l2 -input_format mjpeg -framerate 30 -video_size 1280x720 \
+        -i /dev/v4l/by-id/usb-046d_C922_Pro_Stream_Webcam_$1-video-index0 \
+        -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload' -c:v h264_vaapi \
+        -profile:v high -qp:v 35 -bf 0 \
+        -f rtsp -rtsp_transport tcp rtsp://{{rtsp_address}}:8554/$2
